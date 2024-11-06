@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Store - See More Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        .product {
+            width: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .product-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .product-price {
+            font-size: 14px;
+            color: #555;
+            margin: 5px 0;
+        }
+        .see-more {
+            color: #007bff;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            display: block;
+        }
+        .product-description {
+            display: none;
+            font-size: 12px;
+            color: #333;
+            margin-top: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Fake Store API Products</h1>
+<div class="product-container" id="productContainer"></div>
+
+<script>
+    // Fetch data from Fake Store API
+    async function fetchProducts() {
+        const response = await fetch('https://fakestoreapi.com/products');
+        const products = await response.json();
+        displayProducts(products);
+    }
+
+    // Display products with "See More" functionality
+    function displayProducts(products) {
+        const productContainer = document.getElementById('productContainer');
+        productContainer.innerHTML = ''; // Clear container
+
+        products.forEach((product) => {
+            // Create product card
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product');
+
+            // Add product image
+            const productImage = document.createElement('img');
+            productImage.src = product.image;
+            productDiv.appendChild(productImage);
+
+            // Add product title
+            const title = document.createElement('div');
+            title.classList.add('product-title');
+            title.textContent = product.title;
+            productDiv.appendChild(title);
+
+            // Add product price
+            const price = document.createElement('div');
+            price.classList.add('product-price');
+            price.textContent = `$${product.price}`;
+            productDiv.appendChild(price);
+
+            // Add product description (initially hidden)
+            const description = document.createElement('div');
+            description.classList.add('product-description');
+            description.textContent = product.description;
+            productDiv.appendChild(description);
+
+            // Create "See More" button with closure
+            const seeMoreButton = document.createElement('span');
+            seeMoreButton.classList.add('see-more');
+            seeMoreButton.textContent = 'See More';
+            
+            // Closure to manage "See More" toggle
+            (function(seeMoreButton, description) {
+                let expanded = false; // Track if description is expanded
+
+                // Toggle description display
+                seeMoreButton.addEventListener('click', () => {
+                    expanded = !expanded;
+                    description.style.display = expanded ? 'block' : 'none';
+                    seeMoreButton.textContent = expanded ? 'See Less' : 'See More';
+                });
+            })(seeMoreButton, description); // Pass button and description to closure
+
+            productDiv.appendChild(seeMoreButton);
+
+            // Append product to container
+            productContainer.appendChild(productDiv);
+        });
+    }
+
+    // Fetch and display products on page load
+    fetchProducts();
+</script>
+
+</body>
+</html>
